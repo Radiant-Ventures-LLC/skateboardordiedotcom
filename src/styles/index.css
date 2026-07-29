@@ -1,0 +1,52 @@
+/* skateAF — the stylesheet. Import once at your app root:
+ *   import 'skateaf/styles.css'
+ *
+ * Fonts load from Google Fonts. In a fully self-contained build you'd bundle
+ * these locally; the @import keeps the starter zero-config.
+ */
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Oswald:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  body {
+    @apply bg-paper text-ink font-body antialiased;
+  }
+
+  /* Loud, condensed, uppercase headings by default — agitprop voice. */
+  h1, h2, h3 {
+    @apply font-display uppercase tracking-slogan text-ink;
+    text-wrap: balance;
+  }
+
+  /* Chunky, visible focus — accessibility is solidarity. */
+  :where(a, button, input, textarea, select, [tabindex]):focus-visible {
+    outline: 3px solid theme('colors.sky.DEFAULT');
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  /* Diagonal caution-stripe fill — used by Divider and banners. */
+  .skate-stripes {
+    background-image: repeating-linear-gradient(
+      -45deg,
+      theme('colors.void') 0,
+      theme('colors.void') 10px,
+      theme('colors.gold.DEFAULT') 10px,
+      theme('colors.gold.DEFAULT') 20px
+    );
+  }
+
+  /* Halftone dot paper — subtle paradise texture for surfaces. */
+  .skate-halftone {
+    background-image: radial-gradient(theme('colors.concrete.200') 1.4px, transparent 1.4px);
+    background-size: 10px 10px;
+  }
+}

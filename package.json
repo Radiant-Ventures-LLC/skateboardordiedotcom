@@ -1,0 +1,52 @@
+{
+  "name": "skateaf",
+  "version": "0.1.0",
+  "description": "skateAF — a constructivist-agitprop skate-culture design system. Skate. Organize. Repeat.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./styles.css": "./dist/skateAF.css",
+    "./preset": "./tailwind-preset.cjs"
+  },
+  "files": [
+    "dist",
+    "tailwind-preset.cjs"
+  ],
+  "scripts": {
+    "build:js": "tsup",
+    "build:css": "tailwindcss -i ./src/styles/index.css -o ./dist/skateAF.css --minify",
+    "build": "npm run build:js && npm run build:css",
+    "dev:css": "tailwindcss -i ./src/styles/index.css -o ./dist/skateAF.css --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^2.5.4"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tailwindcss": "^3.4.15",
+    "tsup": "^8.3.5",
+    "typescript": "^5.6.3"
+  }
+}
