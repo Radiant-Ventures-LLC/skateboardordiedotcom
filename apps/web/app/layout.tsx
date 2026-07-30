@@ -1,18 +1,16 @@
 import type { Metadata } from "next";
+import { voice } from "skateaf";
 import "./globals.css";
 
-// NOTE: skateaf ships as a single bundle that includes client (hook-using)
-// components, so importing from it pulls the client boundary in. Keep this
-// server-only root layout free of skateaf imports; brand copy lives in
-// `voice` and is consumed in client components (see app/page.tsx).
-
+// skateaf is now RSC-native: `voice` (and server-safe components) can be
+// imported directly into Server Components. Only the interactive components
+// (Modal/Tabs/Toast/Toggle/Input/Navbar) carry their own "use client".
 export const metadata: Metadata = {
   title: {
-    default: "skateboardordie.com — Just another day in Paradise.",
+    default: `skateboardordie.com — ${voice.tagline}`,
     template: "%s — skateboardordie.com",
   },
-  description:
-    "The gate is always open. Everything you need is inside. Skate. Organize. Repeat.",
+  description: `${voice.welcome.line} ${voice.creed}`,
 };
 
 export default function RootLayout({
