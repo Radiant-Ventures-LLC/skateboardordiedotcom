@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { voice } from "skateaf";
+import { SiteNav } from "./_components/SiteNav";
+import { SiteFooter } from "./_components/SiteFooter";
 import "./globals.css";
 
 // skateaf is now RSC-native: `voice` (and server-safe components) can be
@@ -18,7 +20,11 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body className="flex min-h-screen flex-col">
+        <SiteNav />
+        <div className="flex-1">{children}</div>
+        <SiteFooter />
+      </body>
     </html>
   );
 }

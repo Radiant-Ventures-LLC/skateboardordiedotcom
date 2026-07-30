@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      # Build the design system FIRST — the web app imports skateaf/styles.css
+      # (dist/skateAF.css), a build artifact that is gitignored. The full build
+      # runs both build:js and build:css (build:js alone would clean the CSS).
+      - name: Build skateAF design system
+        run: pnpm --filter skateaf run build
+
+      - name: Typecheck design system
+        run: pnpm --filter skateaf run typecheck
+
+      - name: Typecheck web app
+        run: pnpm --filter web run typecheck
+
+      - name: Build web app
+        run: pnpm --filter web run build

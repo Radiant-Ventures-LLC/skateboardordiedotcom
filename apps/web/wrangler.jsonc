@@ -13,5 +13,13 @@
       "binding": "WORKER_SELF_REFERENCE",
       "service": "skateboardordie"
     }
+  ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "skateboardordie-waitlist",
+      "database_id": "ce8785b7-ca29-41da-9ad7-afe4330bde2c",
+      "migrations_dir": "migrations"
+    }
   ]
 }

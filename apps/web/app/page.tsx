@@ -1,5 +1,4 @@
 import {
-  Button,
   Heading,
   Marquee,
   Sticker,
@@ -10,10 +9,11 @@ import {
   Wheel,
   voice,
 } from "skateaf";
+import { LinkButton } from "./_components/LinkButton";
 
 export default function Home() {
   return (
-    <main className="min-h-screen">
+    <main>
       {/* Top chant */}
       <Marquee items={[...voice.chants]} tone="flag" />
 
@@ -38,12 +38,12 @@ export default function Home() {
         </p>
 
         <div className="mt-10 flex flex-wrap items-center gap-4">
-          <Button variant="flag" size="lg">
+          <LinkButton href="/early-access" variant="flag" size="lg">
             {voice.cta.enter}
-          </Button>
-          <Button variant="outline" size="lg">
+          </LinkButton>
+          <LinkButton href="/manifesto" variant="outline" size="lg">
             {voice.cta.later}
-          </Button>
+          </LinkButton>
         </div>
 
         <div className="mt-16 flex items-center gap-6 text-void">
