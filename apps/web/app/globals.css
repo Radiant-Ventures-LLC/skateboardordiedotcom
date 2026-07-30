@@ -1,0 +1,136 @@
+/* skateboardordie.com — app stylesheet
+ * ------------------------------------
+ * Two layers of skateAF:
+ *   1. The compiled design-system CSS (fonts, preflight, component classes,
+ *      .skate-stripes / .skate-halftone). This guarantees every skateAF
+ *      component renders exactly as authored — no v3→v4 reconstruction.
+ *   2. Tailwind 4 (theme + utilities, preflight opted out to avoid a second
+ *      reset) with the brand tokens ported into @theme, so app-authored markup
+ *      can reach the same vocabulary: bg-flag, font-display, text-h1, etc.
+ */
+@import "skateaf/styles.css";
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+@theme {
+  /* ---- surfaces ---- */
+  --color-void: #0b0b0b;
+  --color-ink: #111111;
+  --color-paper: #f4efe3;
+
+  /* ---- revolutionary red (the flag) ---- */
+  --color-flag: #e01b1b;
+  --color-flag-50: #feecea;
+  --color-flag-100: #fccfc9;
+  --color-flag-200: #f79a8e;
+  --color-flag-300: #f16455;
+  --color-flag-400: #ec3a26;
+  --color-flag-500: #e01b1b;
+  --color-flag-600: #c11414;
+  --color-flag-700: #9a0f0f;
+  --color-flag-800: #6e0b0b;
+  --color-flag-900: #450808;
+  --color-blood: #7a0c0c;
+
+  /* ---- sun gold ---- */
+  --color-gold: #ffc831;
+  --color-gold-400: #ffd85e;
+  --color-gold-500: #ffc831;
+  --color-gold-600: #e9a80f;
+
+  /* ---- paradise sky ---- */
+  --color-sky: #22b4e6;
+  --color-sky-400: #5ccbf0;
+  --color-sky-500: #22b4e6;
+  --color-sky-600: #0e8fc0;
+
+  /* ---- palm green ---- */
+  --color-palm: #22b573;
+  --color-palm-400: #4fcb93;
+  --color-palm-500: #22b573;
+  --color-palm-600: #158a56;
+
+  /* ---- concrete grays ---- */
+  --color-concrete-50: #edebe6;
+  --color-concrete-100: #d8d5ce;
+  --color-concrete-200: #b7b3aa;
+  --color-concrete-300: #928e85;
+  --color-concrete-400: #6e6a62;
+  --color-concrete-500: #4c4842;
+  --color-concrete-600: #33302b;
+  --color-concrete-700: #242220;
+  --color-concrete-800: #171614;
+  --color-concrete-900: #0d0c0b;
+
+  /* ---- type ---- */
+  --font-display: "Oswald", "Arial Narrow", "Helvetica Neue Condensed", sans-serif;
+  --font-poster: "Archivo Black", Impact, "Arial Black", sans-serif;
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "Space Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --text-micro: 0.6875rem;
+  --text-micro--line-height: 1;
+  --text-micro--letter-spacing: 0.12em;
+  --text-meta: 0.8125rem;
+  --text-meta--line-height: 1.2;
+  --text-meta--letter-spacing: 0.06em;
+  --text-lede: 1.25rem;
+  --text-lede--line-height: 1.45;
+  --text-h3: 1.75rem;
+  --text-h3--line-height: 1.05;
+  --text-h2: 2.75rem;
+  --text-h2--line-height: 0.98;
+  --text-h1: 4rem;
+  --text-h1--line-height: 0.92;
+  --text-display: 6rem;
+  --text-display--line-height: 0.86;
+  --text-display--letter-spacing: -0.01em;
+
+  --text-body: 1rem;
+  --text-body--line-height: 1.55;
+
+  --tracking-slogan: 0.06em;
+  --tracking-stamp: 0.18em;
+
+  /* NOTE: skateAF's named spacing scale (xs/sm/md/lg/xl/2xl/3xl) is intentionally
+   * NOT ported into `--spacing-*` here. Those names collide with Tailwind 4's
+   * built-in sizing tokens — e.g. defining `--spacing-2xl` hijacks `max-w-2xl`,
+   * `w-lg`, etc. to the 4px scale. Components already ship that spacing compiled
+   * in `skateaf/styles.css`; in app markup use Tailwind's native spacing scale
+   * (p-6, gap-4, py-24, …) and the container scale (max-w-2xl, max-w-5xl). */
+
+  /* ---- hard, blur-less poster shadows ---- */
+  --shadow-hard: 4px 4px 0 0 #0b0b0b;
+  --shadow-hard-lg: 8px 8px 0 0 #0b0b0b;
+  --shadow-hard-flag: 4px 4px 0 0 #e01b1b;
+  --shadow-hard-gold: 4px 4px 0 0 #f2c230;
+
+  /* ---- motion ---- */
+  --animate-marquee: marquee 22s linear infinite;
+  --animate-marquee-fast: marquee 12s linear infinite;
+  --animate-slap-in: slap-in 260ms cubic-bezier(0.2, 1.4, 0.4, 1) both;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes slap-in {
+  0% {
+    transform: scale(0.6) rotate(-8deg);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.06) rotate(-2deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(-2deg);
+    opacity: 1;
+  }
+}

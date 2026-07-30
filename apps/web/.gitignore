@@ -1,0 +1,17 @@
+# dependencies
+node_modules/
+
+# next.js
+/.next/
+/out/
+next-env.d.ts
+
+# production / cloudflare
+/.open-next/
+/.wrangler/
+cloudflare-env.d.ts
+
+# misc
+*.log
+.DS_Store
+.env*.local
