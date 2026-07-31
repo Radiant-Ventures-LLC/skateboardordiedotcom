@@ -1,7 +1,15 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import Script from "next/script";
 import { voice } from "skateaf";
+
+// Public values (safe to ship to the browser): the Turnstile sitekey and the
+// managed siteverify Worker deployed via Turnstile Spin. The secret lives only
+// on that Worker.
+const TURNSTILE_SITEKEY = "0x4AAAAAAECWBITJhNy_vq8m";
+const SITEVERIFY_URL =
+  "https://turnstile-siteverify-skateboardordie.radiantllc.workers.dev";
 
 type Status =
   | { kind: "idle" }
@@ -19,6 +27,10 @@ function readSource(): string | null {
   return p.get("ref") ?? p.get("utm_source") ?? null;
 }
 
+function resetTurnstile() {
+  (window as unknown as { turnstile?: { reset: () => void } }).turnstile?.reset();
+}
+
 export function WaitlistForm() {
   const [status, setStatus] = useState<Status>({ kind: "idle" });
 
@@ -27,7 +39,35 @@ export function WaitlistForm() {
     const form = e.currentTarget;
     const data = new FormData(form);
 
+    // Turnstile injects this field once the challenge is solved.
+    const token = data.get("cf-turnstile-response");
+    if (typeof token !== "string" || !token) {
+      setStatus({ kind: "error", message: "Hang on a sec for the human check, then send it." });
+      return;
+    }
+
     setStatus({ kind: "submitting" });
+
+    // Gate on siteverify: browser → our siteverify Worker → Cloudflare.
+    try {
+      const verify = await fetch(SITEVERIFY_URL, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ token }),
+      });
+      const vres = (await verify.json()) as { success?: boolean };
+      if (!vres.success) {
+        resetTurnstile();
+        setStatus({ kind: "error", message: "Couldn't confirm you're human. Give it another go." });
+        return;
+      }
+    } catch {
+      resetTurnstile();
+      setStatus({ kind: "error", message: "Human check didn't go through. Try again in a sec." });
+      return;
+    }
+
+    // Verified — run the original signup.
     try {
       const res = await fetch("/api/waitlist", {
         method: "POST",
@@ -46,12 +86,14 @@ export function WaitlistForm() {
         error?: string;
       };
       if (!res.ok || !body.ok) {
+        resetTurnstile();
         setStatus({ kind: "error", message: body.error ?? "Something went sideways." });
         return;
       }
       setStatus({ kind: body.status === "already" ? "already" : "joined" });
       form.reset();
     } catch {
+      resetTurnstile();
       setStatus({ kind: "error", message: "No signal. Check your connection and try again." });
     }
   }
@@ -76,6 +118,12 @@ export function WaitlistForm() {
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-4">
+      <Script
+        src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+        async
+        defer
+      />
+
       {/* Honeypot — visually hidden, off the tab order. Bots fill it; humans don't. */}
       <div aria-hidden className="absolute left-[-9999px] h-0 w-0 overflow-hidden">
         <label>
@@ -124,6 +172,14 @@ export function WaitlistForm() {
           />
         </label>
       </div>
+
+      {/* Turnstile widget — renders the human check; injects cf-turnstile-response. */}
+      <div
+        className="cf-turnstile"
+        data-sitekey={TURNSTILE_SITEKEY}
+        data-action="turnstile-spin-v1"
+        data-theme="light"
+      />
 
       {status.kind === "error" && (
         <p role="alert" className="border-2 border-flag bg-flag/10 px-4 py-2 font-mono text-meta text-flag-700">
