@@ -3,10 +3,7 @@
 import { useState, type FormEvent } from "react";
 import Script from "next/script";
 import { voice } from "skateaf";
-
-// Public sitekey (safe to ship). The secret is a Worker secret
-// (TURNSTILE_SECRET_KEY) used only by /api/waitlist.
-const TURNSTILE_SITEKEY = "0x4AAAAAAECWBITJhNy_vq8m";
+import { TURNSTILE_SITEKEY } from "../_lib/turnstileSitekey";
 
 type Status =
   | { kind: "idle" }

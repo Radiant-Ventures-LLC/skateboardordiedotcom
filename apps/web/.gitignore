@@ -16,3 +16,6 @@ cloudflare-env.d.ts
 *.tsbuildinfo
 .DS_Store
 .env*.local
+
+# local secrets for wrangler / next dev
+.dev.vars*

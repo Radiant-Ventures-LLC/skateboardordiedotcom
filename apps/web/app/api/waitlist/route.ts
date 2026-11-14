@@ -1,4 +1,7 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
+import { inBackground } from "../../_lib/background";
+import { EMAIL_RE, clean, json } from "../../_lib/http";
+import { verifyTurnstile } from "../../_lib/turnstile";
 import { SENDER, welcomeEmail } from "../../_lib/welcomeEmail";
 
 // Runs in the Worker (nodejs runtime via OpenNext) on every request.
@@ -14,51 +17,6 @@ type Payload = {
   // Turnstile token from the widget; verified server-side below.
   turnstileToken?: unknown;
 };
-
-const SITEVERIFY = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
-
-// Server-side Turnstile check. The token is single-use, so this is the only
-// place it gets redeemed. Fails closed if the secret isn't configured.
-async function verifyTurnstile(
-  token: string,
-  secret: string | undefined,
-  ip: string | null,
-): Promise<boolean> {
-  if (!secret) {
-    console.error("TURNSTILE_SECRET_KEY is not set");
-    return false;
-  }
-  const form = new FormData();
-  form.append("secret", secret);
-  form.append("response", token);
-  if (ip) form.append("remoteip", ip);
-  try {
-    const res = await fetch(SITEVERIFY, { method: "POST", body: form });
-    const out = (await res.json()) as { success?: boolean };
-    return out.success === true;
-  } catch (err) {
-    console.error("turnstile siteverify failed", err);
-    return false;
-  }
-}
-
-// Pragmatic email check — good enough to reject typos/garbage without
-// rejecting valid-but-unusual addresses.
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-function clean(v: unknown, max: number): string | null {
-  if (typeof v !== "string") return null;
-  const t = v.trim();
-  if (!t) return null;
-  return t.slice(0, max);
-}
-
-function json(body: unknown, status = 200) {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: { "content-type": "application/json" },
-  });
-}
 
 export async function POST(req: Request) {
   let payload: Payload;
@@ -86,12 +44,7 @@ export async function POST(req: Request) {
   const { env, ctx } = getCloudflareContext();
 
   const token = clean(payload.turnstileToken, 2048);
-  const secret = (env as unknown as { TURNSTILE_SECRET_KEY?: string })
-    .TURNSTILE_SECRET_KEY;
-  if (
-    !token ||
-    !(await verifyTurnstile(token, secret, req.headers.get("cf-connecting-ip")))
-  ) {
+  if (!(await verifyTurnstile(env, token, req.headers.get("cf-connecting-ip")))) {
     return json(
       { ok: false, error: "Couldn't confirm you're human. Give it another go." },
       403,
@@ -115,12 +68,7 @@ export async function POST(req: Request) {
     if (joined) {
       const refCode = `crew-${res.meta.last_row_id}`;
       const msg = welcomeEmail({ handle, refCode });
-      ctx.waitUntil(
-        env.EMAIL.send({ from: SENDER, to: email, ...msg }).catch((err: unknown) => {
-          const e = err as { code?: string; message?: string };
-          console.error("welcome email failed", e.code, e.message);
-        }),
-      );
+      inBackground(ctx, "welcome email", () => env.EMAIL.send({ from: SENDER, to: email, ...msg }));
     }
     return json({ ok: true, status: joined ? "joined" : "already" });
   } catch (err) {
