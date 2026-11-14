@@ -34,6 +34,9 @@ jobs:
       - name: Typecheck design system
         run: pnpm --filter skateaf run typecheck
 
+      - name: Generate Cloudflare binding types
+        run: pnpm --filter web run cf-typegen
+
       - name: Typecheck web app
         run: pnpm --filter web run typecheck
 
