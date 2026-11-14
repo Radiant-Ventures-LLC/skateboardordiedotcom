@@ -1,0 +1,8 @@
+{
+  "pkg": "skateaf",
+  "globalName": "SkateAF",
+  "projectId": "c7f8bb28-b886-4f54-a70d-fd1a652bebeb",
+  "shape": "package",
+  "buildCmd": "pnpm run build",
+  "cssEntry": "dist/skateAF.css"
+}
