@@ -10,7 +10,36 @@ type Payload = {
   source?: unknown;
   // Honeypot: real humans never fill this hidden field.
   website?: unknown;
+  // Turnstile token from the widget; verified server-side below.
+  turnstileToken?: unknown;
 };
+
+const SITEVERIFY = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
+
+// Server-side Turnstile check. The token is single-use, so this is the only
+// place it gets redeemed. Fails closed if the secret isn't configured.
+async function verifyTurnstile(
+  token: string,
+  secret: string | undefined,
+  ip: string | null,
+): Promise<boolean> {
+  if (!secret) {
+    console.error("TURNSTILE_SECRET_KEY is not set");
+    return false;
+  }
+  const form = new FormData();
+  form.append("secret", secret);
+  form.append("response", token);
+  if (ip) form.append("remoteip", ip);
+  try {
+    const res = await fetch(SITEVERIFY, { method: "POST", body: form });
+    const out = (await res.json()) as { success?: boolean };
+    return out.success === true;
+  } catch (err) {
+    console.error("turnstile siteverify failed", err);
+    return false;
+  }
+}
 
 // Pragmatic email check — good enough to reject typos/garbage without
 // rejecting valid-but-unusual addresses.
@@ -54,6 +83,19 @@ export async function POST(req: Request) {
   const userAgent = clean(req.headers.get("user-agent"), 400);
 
   const { env } = getCloudflareContext();
+
+  const token = clean(payload.turnstileToken, 2048);
+  const secret = (env as unknown as { TURNSTILE_SECRET_KEY?: string })
+    .TURNSTILE_SECRET_KEY;
+  if (
+    !token ||
+    !(await verifyTurnstile(token, secret, req.headers.get("cf-connecting-ip")))
+  ) {
+    return json(
+      { ok: false, error: "Couldn't confirm you're human. Give it another go." },
+      403,
+    );
+  }
 
   try {
     const res = await env.DB.prepare(

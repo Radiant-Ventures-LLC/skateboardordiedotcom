@@ -8,6 +8,7 @@ import "./globals.css";
 // imported directly into Server Components. Only the interactive components
 // (Modal/Tabs/Toast/Toggle/Input/Navbar) carry their own "use client".
 export const metadata: Metadata = {
+  metadataBase: new URL("https://skateboardordie.com"),
   title: {
     default: `skateboardordie.com — ${voice.tagline}`,
     template: "%s — skateboardordie.com",

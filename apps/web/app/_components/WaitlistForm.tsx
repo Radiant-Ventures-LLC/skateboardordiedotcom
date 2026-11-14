@@ -4,12 +4,9 @@ import { useState, type FormEvent } from "react";
 import Script from "next/script";
 import { voice } from "skateaf";
 
-// Public values (safe to ship to the browser): the Turnstile sitekey and the
-// managed siteverify Worker deployed via Turnstile Spin. The secret lives only
-// on that Worker.
+// Public sitekey (safe to ship). The secret is a Worker secret
+// (TURNSTILE_SECRET_KEY) used only by /api/waitlist.
 const TURNSTILE_SITEKEY = "0x4AAAAAAECWBITJhNy_vq8m";
-const SITEVERIFY_URL =
-  "https://turnstile-siteverify-skateboardordie.radiantllc.workers.dev";
 
 type Status =
   | { kind: "idle" }
@@ -48,26 +45,7 @@ export function WaitlistForm() {
 
     setStatus({ kind: "submitting" });
 
-    // Gate on siteverify: browser → our siteverify Worker → Cloudflare.
-    try {
-      const verify = await fetch(SITEVERIFY_URL, {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ token }),
-      });
-      const vres = (await verify.json()) as { success?: boolean };
-      if (!vres.success) {
-        resetTurnstile();
-        setStatus({ kind: "error", message: "Couldn't confirm you're human. Give it another go." });
-        return;
-      }
-    } catch {
-      resetTurnstile();
-      setStatus({ kind: "error", message: "Human check didn't go through. Try again in a sec." });
-      return;
-    }
-
-    // Verified — run the original signup.
+    // The API verifies the Turnstile token server-side before writing.
     try {
       const res = await fetch("/api/waitlist", {
         method: "POST",
@@ -78,6 +56,7 @@ export function WaitlistForm() {
           city: data.get("city"),
           website: data.get("website"), // honeypot
           source: readSource(),
+          turnstileToken: token,
         }),
       });
       const body = (await res.json()) as {
