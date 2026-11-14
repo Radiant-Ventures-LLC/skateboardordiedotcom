@@ -25,6 +25,14 @@ export default function RootLayout({
         <SiteNav />
         <div className="flex-1">{children}</div>
         <SiteFooter />
+        {/* Cloudflare Web Analytics: cookie-free, no consent banner needed.
+            Manual install because auto-injection doesn't reach Worker-rendered
+            pages. The token is public by design. */}
+        <script
+          type="module"
+          src="https://static.cloudflareinsights.com/beacon.min.js"
+          data-cf-beacon='{"token": "47f58dc6d4d94009b777586e2425cb5e"}'
+        />
       </body>
     </html>
   );
