@@ -1,4 +1,5 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
+import { SENDER, welcomeEmail } from "../../_lib/welcomeEmail";
 
 // Runs in the Worker (nodejs runtime via OpenNext) on every request.
 export const dynamic = "force-dynamic";
@@ -82,7 +83,7 @@ export async function POST(req: Request) {
   const source = clean(payload.source, 120);
   const userAgent = clean(req.headers.get("user-agent"), 400);
 
-  const { env } = getCloudflareContext();
+  const { env, ctx } = getCloudflareContext();
 
   const token = clean(payload.turnstileToken, 2048);
   const secret = (env as unknown as { TURNSTILE_SECRET_KEY?: string })
@@ -108,6 +109,19 @@ export async function POST(req: Request) {
 
     // No rows written → the email was already on the list.
     const joined = (res.meta?.changes ?? 0) > 0;
+
+    // New signups get one welcome note with a personal share link. Sent after
+    // the response so a mail hiccup never blocks or fails the signup.
+    if (joined) {
+      const refCode = `crew-${res.meta.last_row_id}`;
+      const msg = welcomeEmail({ handle, refCode });
+      ctx.waitUntil(
+        env.EMAIL.send({ from: SENDER, to: email, ...msg }).catch((err: unknown) => {
+          const e = err as { code?: string; message?: string };
+          console.error("welcome email failed", e.code, e.message);
+        }),
+      );
+    }
     return json({ ok: true, status: joined ? "joined" : "already" });
   } catch (err) {
     console.error("waitlist insert failed", err);
