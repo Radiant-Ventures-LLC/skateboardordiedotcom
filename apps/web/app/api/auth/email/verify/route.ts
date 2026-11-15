@@ -18,6 +18,13 @@ export const dynamic = "force-dynamic";
  * links can't burn the token. Creates the account on first sign-in if the
  * address has an invite.
  */
+
+// Accounts created from these invite waves get the founding-skater mark,
+// which is never handed out again. Add pre-beta waves here if they count.
+const FOUNDING_WAVES = new Set(["founders"]);
+function isFoundingWave(wave: string | null): boolean {
+  return wave != null && FOUNDING_WAVES.has(wave);
+}
 export async function POST(req: Request) {
   if (!sameOrigin(req)) return badOrigin();
   const { env } = getCloudflareContext();
@@ -50,17 +57,17 @@ export async function POST(req: Request) {
 
   if (!user) {
     const invite = await db
-      .prepare(`SELECT id FROM invites WHERE lower(email) = lower(?1)`)
+      .prepare(`SELECT id, wave FROM invites WHERE lower(email) = lower(?1)`)
       .bind(used.email)
-      .first<{ id: number }>();
+      .first<{ id: number; wave: string | null }>();
     if (!invite) {
       return json({ ok: false, error: "This address doesn't have a pass yet." }, 403);
     }
     const id = crypto.randomUUID();
     await db.batch([
       db
-        .prepare(`INSERT INTO users (id, email) VALUES (?1, lower(?2))`)
-        .bind(id, used.email),
+        .prepare(`INSERT INTO users (id, email, founding) VALUES (?1, lower(?2), ?3)`)
+        .bind(id, used.email, isFoundingWave(invite.wave) ? 1 : 0),
       db
         .prepare(`UPDATE invites SET redeemed_at = datetime('now') WHERE id = ?1`)
         .bind(invite.id),
