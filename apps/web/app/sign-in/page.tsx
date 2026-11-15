@@ -17,7 +17,7 @@ export default async function SignIn() {
   return (
     <section className="mx-auto grid max-w-5xl gap-12 px-6 py-20 md:grid-cols-2">
       <div>
-        <Sticker tone="gold" tilt>
+        <Sticker tone="gold" size="lg" tilt>
           Founding Skaters
         </Sticker>
         <Heading level={1} bar poster className="mt-6">

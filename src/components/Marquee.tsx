@@ -42,7 +42,7 @@ export const Marquee = forwardRef<HTMLDivElement, MarqueeProps>(function Marquee
   const track = (
     <div
       className={cn(
-        'flex shrink-0 items-center gap-lg pr-lg font-display font-700 uppercase tracking-slogan text-lede',
+        'flex shrink-0 items-center gap-lg pr-lg font-display font-bold uppercase tracking-slogan text-lede',
         'motion-safe:animate-marquee',
         fast && 'motion-safe:animate-marquee-fast'
       )}

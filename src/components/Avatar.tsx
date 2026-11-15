@@ -41,7 +41,7 @@ export const Avatar = forwardRef<HTMLSpanElement, AvatarProps>(function Avatar(
       ref={ref}
       className={cn(
         'inline-flex items-center justify-center overflow-hidden border-3 border-void shadow-hard select-none',
-        'font-display font-700 uppercase leading-none',
+        'font-display font-bold uppercase leading-none',
         round ? 'rounded-full' : 'rounded-none',
         !src && TONES[tone],
         SIZES[size],

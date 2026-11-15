@@ -2,12 +2,21 @@ import { forwardRef, type HTMLAttributes } from 'react';
 import { cn } from '../lib/cn';
 
 export type TagTone = 'flag' | 'gold' | 'sky' | 'palm' | 'void' | 'neutral';
+export type TagSize = 'sm' | 'md' | 'lg';
 
 export interface TagProps extends HTMLAttributes<HTMLSpanElement> {
   tone?: TagTone;
+  /** sm = label-size (default); md and lg to sit beside bigger type. */
+  size?: TagSize;
   /** Solid fill instead of outline. */
   solid?: boolean;
 }
+
+const SIZES: Record<TagSize, string> = {
+  sm: 'text-micro px-sm py-[2px]',
+  md: 'text-meta px-sm py-[2px]',
+  lg: 'text-body px-md py-xs',
+};
 
 const OUTLINE: Record<TagTone, string> = {
   flag: 'text-flag border-flag',
@@ -32,15 +41,16 @@ const SOLID: Record<TagTone, string> = {
  * Smaller and quieter than a Sticker.
  */
 export const Tag = forwardRef<HTMLSpanElement, TagProps>(function Tag(
-  { tone = 'neutral', solid = false, className, ...props },
+  { tone = 'neutral', size = 'sm', solid = false, className, ...props },
   ref
 ) {
   return (
     <span
       ref={ref}
       className={cn(
-        'inline-flex items-center gap-xs border px-sm py-[2px]',
-        'font-mono text-micro uppercase tracking-stamp',
+        'inline-flex items-center gap-xs border',
+        'font-mono uppercase tracking-stamp',
+        SIZES[size],
         solid ? SOLID[tone] : OUTLINE[tone],
         className
       )}

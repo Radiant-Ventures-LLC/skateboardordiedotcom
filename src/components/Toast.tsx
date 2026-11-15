@@ -44,7 +44,7 @@ export const Toast = forwardRef<HTMLDivElement, ToastProps>(function Toast(
       {icon != null && <span className="mt-[2px] shrink-0 text-lede leading-none">{icon}</span>}
       <div className="flex-1">
         {title != null && (
-          <p className="font-display font-700 uppercase tracking-slogan text-body leading-tight">
+          <p className="font-display font-bold uppercase tracking-slogan text-body leading-tight">
             {title}
           </p>
         )}
@@ -55,7 +55,7 @@ export const Toast = forwardRef<HTMLDivElement, ToastProps>(function Toast(
           type="button"
           onClick={onDismiss}
           aria-label="Dismiss"
-          className="shrink-0 font-mono font-700 leading-none hover:opacity-70"
+          className="shrink-0 font-mono font-bold leading-none hover:opacity-70"
         >
           ✕
         </button>

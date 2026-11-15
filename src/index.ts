@@ -19,10 +19,10 @@ export { Heading } from './components/Heading';
 export type { HeadingProps, HeadingLevel } from './components/Heading';
 
 export { Sticker } from './components/Sticker';
-export type { StickerProps, StickerTone } from './components/Sticker';
+export type { StickerProps, StickerTone, StickerSize } from './components/Sticker';
 
 export { Tag } from './components/Tag';
-export type { TagProps, TagTone } from './components/Tag';
+export type { TagProps, TagTone, TagSize } from './components/Tag';
 
 export { Card } from './components/Card';
 export type { CardProps } from './components/Card';

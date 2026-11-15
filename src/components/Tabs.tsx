@@ -52,7 +52,7 @@ export function Tabs({ items, value, defaultValue, onValueChange, className }: T
               tabIndex={selected ? 0 : -1}
               onClick={() => select(item.value)}
               className={cn(
-                'border-3 border-void px-md py-sm font-display font-600 uppercase tracking-slogan text-body transition-colors',
+                'border-3 border-void px-md py-sm font-display font-semibold uppercase tracking-slogan text-body transition-colors',
                 selected
                   ? 'bg-flag text-paper -mb-[3px] border-b-paper'
                   : 'bg-paper text-ink hover:bg-concrete-50'

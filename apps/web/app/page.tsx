@@ -20,10 +20,10 @@ export default function Home() {
       {/* Hero */}
       <section className="mx-auto max-w-5xl px-6 py-24">
         <div className="flex items-center gap-2">
-          <Sticker tone="gold" tilt>
+          <Sticker tone="gold" size="lg" tilt>
             {voice.welcome.kicker}
           </Sticker>
-          <Tag tone="sky">Paradise</Tag>
+          <Tag tone="sky" size="lg">Paradise</Tag>
         </div>
 
         {/* On phones the size follows the screen width so the longest word fits. */}

@@ -33,7 +33,7 @@ export const Heading = forwardRef<HTMLHeadingElement, HeadingProps>(function Hea
       ref={ref}
       className={cn(
         'uppercase tracking-slogan text-ink',
-        poster ? 'font-poster' : 'font-display font-700',
+        poster ? 'font-poster' : 'font-display font-bold',
         LEVEL_SIZE[level],
         bar && 'flex items-center gap-md before:content-[""] before:block before:w-2 before:self-stretch before:min-h-[0.8em] before:bg-flag',
         className

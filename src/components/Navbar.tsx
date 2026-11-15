@@ -56,7 +56,7 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(function Navbar(
               onClick={link.onClick}
               aria-current={link.active ? 'page' : undefined}
               className={cn(
-                'font-display font-600 uppercase tracking-slogan text-body transition-colors',
+                'font-display font-semibold uppercase tracking-slogan text-body transition-colors',
                 'hover:text-gold',
                 link.active && 'text-gold underline decoration-3 underline-offset-4'
               )}

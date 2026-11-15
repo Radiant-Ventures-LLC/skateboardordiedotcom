@@ -69,7 +69,7 @@ export function Modal({ open, onClose, title, children, footer, className }: Mod
               type="button"
               onClick={onClose}
               aria-label="Close"
-              className="font-mono text-lede font-700 leading-none text-void hover:text-flag"
+              className="font-mono text-lede font-bold leading-none text-void hover:text-flag"
             >
               ✕
             </button>

@@ -47,7 +47,7 @@ export default async function Account({
 
   return (
     <section className="mx-auto max-w-3xl px-6 py-20">
-      <Sticker tone="gold" tilt>
+      <Sticker tone="gold" size="lg" tilt>
         Founding Skater
       </Sticker>
       <Heading level={1} bar poster className="mt-6">

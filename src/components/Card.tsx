@@ -42,7 +42,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
       {ribbon != null && (
         <div
           className={cn(
-            'border-b-3 border-void px-md py-sm font-display font-700 uppercase tracking-slogan text-body',
+            'border-b-3 border-void px-md py-sm font-display font-bold uppercase tracking-slogan text-body',
             RIBBON[ribbonTone]
           )}
         >
