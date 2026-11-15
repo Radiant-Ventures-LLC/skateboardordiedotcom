@@ -7,10 +7,18 @@
  *   2. Tailwind 4 (theme + utilities, preflight opted out to avoid a second
  *      reset) with the brand tokens ported into @theme, so app-authored markup
  *      can reach the same vocabulary: bg-flag, font-display, text-h1, etc.
+ *
+ * Utilities are deliberately NOT in a cascade layer. skateAF's CSS is
+ * unlayered, and unlayered rules beat layered ones whatever their
+ * specificity, so a layered `mt-6` or `px-10` lost to skateAF's reset
+ * (`p { margin: 0 }`, `button { padding: 0 }`). Unlayered and imported after
+ * skateAF, utilities win on specificity and source order instead. (Putting
+ * skateAF in a layer would also work, but its Google Fonts `@import` is then
+ * nested in `@layer {}`, which is invalid, and the fonts silently stop loading.)
  */
 @import "skateaf/styles.css";
 @import "tailwindcss/theme.css" layer(theme);
-@import "tailwindcss/utilities.css" layer(utilities);
+@import "tailwindcss/utilities.css";
 
 @theme {
   /* ---- surfaces ---- */

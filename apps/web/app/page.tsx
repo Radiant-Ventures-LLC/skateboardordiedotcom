@@ -26,7 +26,8 @@ export default function Home() {
           <Tag tone="sky">Paradise</Tag>
         </div>
 
-        <Heading level={1} bar poster className="mt-6">
+        {/* On phones the size follows the screen width so the longest word fits. */}
+        <Heading level={1} bar poster className="mt-6 max-sm:text-[length:clamp(2rem,10.5vw,4rem)]">
           Just another day in Paradise.
         </Heading>
 

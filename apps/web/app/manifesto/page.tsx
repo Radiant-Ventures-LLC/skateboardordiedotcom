@@ -36,7 +36,8 @@ export default function Manifesto() {
         <Wheel className="h-9 w-9" />
       </div>
 
-      <Heading level={1} bar poster className="mt-6">
+      {/* On phones the size follows the screen width so the longest word fits. */}
+      <Heading level={1} bar poster className="mt-6 max-sm:text-[length:clamp(2rem,10.5vw,4rem)]">
         The Manifesto
       </Heading>
       <p className="mt-6 text-lede text-concrete-600">{voice.welcome.line}</p>

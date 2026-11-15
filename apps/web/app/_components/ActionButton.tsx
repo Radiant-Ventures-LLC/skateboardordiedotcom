@@ -11,12 +11,9 @@ const VARIANTS: Record<Variant, string> = {
   outline: "bg-paper text-ink hover:bg-concrete-50",
 };
 
-// Padding is forced with `!` because skateAF's unlayered reset currently
-// zeroes button padding (Notion: "Spacing and padding utilities lose to
-// skateAF's reset"). Drop the `!` once that's fixed.
 const SIZES: Record<Size, string> = {
-  md: "text-body px-6! py-2!",
-  lg: "text-lede px-10! py-4!",
+  md: "text-body px-6 py-2",
+  lg: "text-lede px-10 py-4",
 };
 
 type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
