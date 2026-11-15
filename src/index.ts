@@ -62,3 +62,12 @@ export type { ToggleProps } from './components/Toggle';
 
 export { Star, Fist, Wheel } from './components/Motifs';
 export type { MotifProps } from './components/Motifs';
+
+export { SpotPin, spotPinAnchor } from './components/SpotPin';
+export type { SpotPinProps, SpotPinVisibility } from './components/SpotPin';
+
+export { SpotCard } from './components/SpotCard';
+export type { SpotCardProps, SpotCondition } from './components/SpotCard';
+
+export { ClipCard } from './components/ClipCard';
+export type { ClipCardProps } from './components/ClipCard';
